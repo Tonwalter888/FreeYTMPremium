@@ -69,6 +69,10 @@
 - (BOOL)canPlayBackgroundableContent { return YES; }
 %end
 
+%hook YTLocalPlaybackController
+- (BOOL)isPlaybackBackgroundable { return YES; }
+%end
+
 %hook YTMAppDelegate
 - (void)showUpsellAlertWithTitle:(id)title subtitle:(id)subtitle upgradeButtonTitle:(id)upgradeTitle upsellURLString:(id)URL sourceApplication:(id)source {}
 %end
