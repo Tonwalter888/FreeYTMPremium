@@ -305,7 +305,7 @@
 - (id)init {
     self = %orig;
     if (self) {
-        [self setValue:[self setValue:@YES forKey:@"_isMobileAudioTierMode"]; forKey:@"_isMobileAudioTierMode"];
+        [self setValue:@YES forKey:@"_isMobileAudioTierMode"];
     }
     return self;
 }
