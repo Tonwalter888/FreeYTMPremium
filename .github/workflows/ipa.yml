@@ -96,7 +96,7 @@ jobs:
           cd FreeYTMPremium
           echo "FREEYTMPREMIUM_VERSION=$(grep '^Version:' control | cut -d ' ' -f2)" >> $GITHUB_ENV
           make clean package DEBUG=0 FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
-          mv packages/*.deb ${{ github.workspace }}/freeytpremium.deb
+          mv packages/*.deb ${{ github.workspace }}/freeytmpremium.deb
 
       - name: Inject Tweaks Into IPA
         run: cyan -i ytm.ipa -o FreeYTMPremium_${{ env.YTM_VERSION }}_v${{ env.FREEYTMPREMIUM_VERSION }}.ipa -uwef freeytmpremium.deb -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
