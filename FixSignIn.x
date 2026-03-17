@@ -1,4 +1,4 @@
-// Original codes are from YTMusicUltimate - My research from YTM 9.10.3
+// Original codes are from YTMusicUltimate + My research from YTM 9.10.3
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>

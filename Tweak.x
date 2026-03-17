@@ -305,7 +305,7 @@
 - (id)init {
     self = %orig;
     if (self) {
-        [self setValue:[NSNumber numberWithBOOL:YES] forKey:@"_isMobileAudioTierMode"];
+        [self setValue:[self setValue:@YES forKey:@"_isMobileAudioTierMode"]; forKey:@"_isMobileAudioTierMode"];
     }
     return self;
 }
