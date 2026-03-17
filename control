@@ -1,0 +1,9 @@
+Package: dev.water888.freeytmpremium
+Name: FreeYTMPremium
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Unlock premium features for YouTube Music.
+Maintainer: Tonwalter888
+Author: Tonwalter888
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 13.0)
