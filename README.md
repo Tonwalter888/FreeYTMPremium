@@ -6,6 +6,10 @@ Last updated: 17 March 2026
 ## Features
 - Remove music ads and Premium promotions popups
 - Allows background playback
+- Can switch between Song and Video freely
+
+## Known Issue
+Download music doesn't work.
 
 **NOTE:** This repo is **ONLY** for unlock YouTube Premium features only. If you want more features than these, please fork this repo and add your features.
 

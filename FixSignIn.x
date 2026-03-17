@@ -329,7 +329,7 @@ BOOL isFirstTime = YES;
                 }
                 YTAlertView *alertView = [%c(YTAlertView) infoDialog];
                 alertView.title = @"Workaround Activated";
-                alertView.subtitle = @"Please re-login again";
+                alertView.subtitle = @"Please re-sign in again";
                 [alertView show];
             }];
         };

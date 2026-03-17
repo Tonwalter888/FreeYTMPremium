@@ -27,7 +27,7 @@
 %end
 
 %hook YTDataUtils
-+ (id)spamSignalsDictionary { return nil; }
+- (id)spamSignalsDictionary { return nil; }
 %end
 
 %hook YTIPlayerResponse
@@ -35,7 +35,7 @@
 - (id)paidContentOverlayElementRendererOptions { return nil; }
 - (BOOL)isCuepointAdsEnabled { return NO; }
 - (id)adIntroRenderer { return nil; }
-- (BOOL)isDAIEnabledPlayback { return YES; }
+- (BOOL)isDAIEnabledPlayback { return NO; }
 - (id)backgroundUpsell { return nil; }
 - (id)ytm_audioOnlyUpsell { return nil; }
 - (id)offlineUpsell { return nil; }
@@ -56,6 +56,10 @@
 - (BOOL)iosEnablePromoSkoverlay { return NO; }
 - (BOOL)mainAppCoreClientIosHidePromoSheetOnKeyboardShown { return YES; }
 - (BOOL)queueClientGlobalConfigIosEnableElementRendererPromoInQueue { return NO; }
+- (BOOL)isPassiveSignInUniquePremiumValuePropEnabled { return YES; }
+- (void)setIsPassiveSignInUniquePremiumValuePropEnabled:(BOOL)enabled { %orig(YES); }
+- (BOOL)musicClientConfigIosEnableMobileAudioTierLockscreenControls { return YES; }
+- (BOOL)enableYouthereCommandsOnIos { return NO; }
 %end
 
 %hook YTCreateCommentAccessoryView
@@ -81,10 +85,6 @@
 
 %hook YTPlaybackData
 - (BOOL)isPlayableInBackground { return YES; }
-%end
-
-%hook YTMMusicAppMetadataImpl
-- (BOOL)canPlayBackgroundableContent { return YES; }
 %end
 
 %hook YTMMusicAppMetadata
@@ -129,6 +129,7 @@
 
 %hook MDXFeatureFlags
 - (BOOL)areMementoPromotionsEnabled { return NO; }
+- (void)setAreMementoPromotionsEnabled:(BOOL)enabled { %orig(NO); }
 %end
 
 %hook MDXPromotionManager
@@ -163,10 +164,6 @@
 %hook YTIRenderer
 - (BOOL)hasAppPromoAdCtaRenderer { return NO; }
 - (id)appPromoAdCtaRenderer { return nil; }
-%end
-
-%hook YTUserDefaults
-- (BOOL)isPromoForced { return NO; }
 %end
 
 %hook YTShareMainView
@@ -234,10 +231,6 @@
 - (id)mealbarPromoController { return nil; }
 %end
 
-%hook YTMMusicAppMetadataImpl
-- (id)sidePanelPromo { return nil; }
-%end
-
 %hook YTMInterstitialPromoViewControllerImpl
 - (void)showInterstitialPromo:(id)arg1 interstitialParentResponder:(id)arg2 {}
 %end
@@ -258,4 +251,104 @@
 - (void)showInterstitialPromo:(id)arg1 interstitialParentResponder:(id)arg2 {}
 - (id)interstitialPromoView { return nil; }
 - (void)showInterstitialPromo:(id)arg1 enableClientImpressionThrottling:(BOOL)arg2 interstitialParentResponder:(id)arg3 {}
+%end
+
+%hook YTPlayerPromoController
+- (void)showBackgroundabilityUpsell {}
+- (void)showBackgroundOnboardingHint {}
+- (void)showPipOnboardingHint {}
+%end
+
+%hook YTMMusicAppMetadata
+- (BOOL)isPremiumSubscriber { return YES; }
+- (void)setIsPremiumSubscriber:(BOOL)premium { %orig(YES); }
+- (id)sidePanelPromo { return nil; }
+- (id)unlimitedSettingsButton { return nil; }
+- (BOOL)isMobileAudioTier { return YES; }
+%end
+
+%hook YTIShowFullscreenInterstitialCommand
+- (BOOL)shouldThrottleInterstitial { return YES; }
+- (void)setShouldThrottleInterstitial:(BOOL)throttle { %orig(YES); }
+%end
+
+%hook YTMAppResponder
+- (void)presentInterstitialPromoForEvent:(id)event {}
+- (void)presentFullscreenPromoForEvent:(id)event {}
+- (void)presentInterstitialGridPromoForEvent:(id)event {}
+%end
+
+%hook YTMCarPlayController
+- (BOOL)isPremiumSubscriber { return YES; }
+- (void)setIsPremiumSubscriber:(BOOL)premium { %orig(YES); }
+%end
+
+%hook YTMYPCGetOfflineUpsellEndpointCommandHandler
+- (BOOL)isPremiumSubscriber { return YES; }
+- (void)setIsPremiumSubscriber:(BOOL)premium { %orig(YES); }
+%end
+
+%hook YTMWAWatchAppConfig
+- (BOOL)isCurrentUserPremium { return YES; }
+- (BOOL)isCurrentUserMobileAudioTier { return YES; }
+%end
+
+%hook YTMWatchViewController
+- (id)init {
+    self = %orig;
+    if (self) {
+        [self setValue:[NSNumber numberWithBool:YES] forKey:@"_isMobileAudioTierMode"];
+    }
+    return self;
+}
+%end
+
+%hook YTMQueueCollectionViewController
+- (BOOL)isMobileAudioTierQueue { return YES; }
+%end
+
+%hook YTUserDefaults
+- (BOOL)hasOnboarded { return YES; }
+- (BOOL)isPromoForced { return NO; }
+%end
+
+%hook YTCommonUtils
+- (BOOL)isInternallyDistributedBuild { return YES; }
+- (BOOL)isOfflineToDownloadsEnabled { return YES; }
+- (BOOL)isUnitOrFunctionalTesting { return YES; }
+- (BOOL)isEarlGreyV2FunctionalTesting { return YES; }
+- (BOOL)isUnitTesting { return YES; }
+- (BOOL)isFunctionalTesting { return YES; }
+- (BOOL)isDistributedBuild { return NO; }
+%end
+
+%hook YTMYPCGetOfflineUpsellEndpointCommandHandlerImpl
+- (BOOL)isPremiumSubscriber { return YES; }
+%end
+
+%hook YTMCarPlayControllerImpl
+- (BOOL)isPremiumSubscriber { return YES; }
+- (void)setPremiumSubscriber:(BOOL)arg1 { %orig(YES); }
+%end
+
+%hook YTMMusicAppMetadataImpl
+- (BOOL)isPremiumSubscriber { return YES; }
+- (BOOL)isMobileAudioTier { return YES; }
+- (id)sidePanelPromo { return nil; }
+- (BOOL)canPlayBackgroundableContent { return YES; }
+%end
+
+%hook YTMQueueConfigImpl
+- (BOOL)isMobileAudioTierScreenedCastEnabled { return YES; }
+%end
+
+// Unlimited listening - YouAreThere (https://github.com/PoomSmart/YouAreThere)
+%hook YTYouThereController
+- (BOOL)shouldShowYouTherePrompt { return NO; }
+- (void)showYouTherePrompt {}
+%end
+
+%hook YTYouThereControllerImpl
+- (BOOL)shouldShowYouTherePrompt { return NO; }
+- (void)showYouTherePrompt {}
 %end
