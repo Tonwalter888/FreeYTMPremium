@@ -1,4 +1,4 @@
-name: Build FreeYTMPremium
+name: Build FreeYTMPremium Tweak
 on:
   push:
    
@@ -8,7 +8,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build FreeYTMPremium
+    name: Build FreeYTMPremium Tweak
     runs-on: macos-latest
     permissions:
       contents: write

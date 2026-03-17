@@ -11,7 +11,7 @@ Last updated: 17 March 2026
 ## Known Issues
 - Download music and Cast don't work.
 
-**NOTE:** This repo is **ONLY** for unlock YouTube Premium features only. If you want more features than these, please fork this repo and add your features.
+**NOTE:** This repo is **ONLY** for unlock YouTube Premium features only. If you want more features than these, please fork this repo and add your own features.
 
 ## Building
 1. Clone [Theos](https://github.com/theos/theos) along with its submodules.
