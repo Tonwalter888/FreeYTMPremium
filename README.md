@@ -8,8 +8,8 @@ Last updated: 17 March 2026
 - Allows background playback
 - Can switch between Song and Video freely
 
-## Known Issue
-Download music doesn't work.
+## Known Issues
+- Download music and Cast don't work.
 
 **NOTE:** This repo is **ONLY** for unlock YouTube Premium features only. If you want more features than these, please fork this repo and add your features.
 
