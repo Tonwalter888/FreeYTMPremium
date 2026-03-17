@@ -106,12 +106,9 @@
 - (void)showUpsellDialogWithUpsellResponderEvent:(id)responderevent {}
 %end
 
-%hook YTMXSDKContentController
-- (BOOL)shouldDisplayUpsell { return NO; }
-%end
-
 %hook YTMIntegrationsSettingsViewController
 - (void)showUpsellingDialog {}
+- (void)showPromotionScreen {}
 %end
 
 %hook YTMCastSessionControllerImpl
@@ -222,6 +219,7 @@
 %end
 
 %hook YTMXSDKContentController
+- (BOOL)shouldDisplayUpsell { return NO; }
 - (void)parseUpsellPromotionInfos:(id)arg {}
 %end
 
@@ -229,10 +227,6 @@
 - (id)mealbarPromoController { return nil; }
 - (void)setMealbarPromoController:(id)arg {}
 - (void)setMealbarPromoRendererButtonColors:(id)arg {}
-%end
-
-%hook YTMIntegrationsSettingsViewController
-- (void)showPromotionScreen {}
 %end
 
 %hook YTMNavigationImpl
