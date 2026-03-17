@@ -1,4 +1,4 @@
-// Original codes are from YTMusicUltimate + My research from YTM 9.10.3
+// Original codes are from YTMusicUltimate - My research from YTM 9.10.3
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>
@@ -82,11 +82,11 @@ static NSString *accessGroupID() {
 
 %hook SSOKeychainCore
 //Thanks to jawshoeadan for this hook.
-+ (id)accessGroup {
+- (id)accessGroup {
     return accessGroupID();
 }
 
-+ (id)sharedAccessGroup {
+- (id)sharedAccessGroup {
     return accessGroupID();
 }
 %end
@@ -177,7 +177,7 @@ static NSString *accessGroupID() {
     return YT_BUNDLE_ID;
 }
 
--(id)exp_productionBundleIdentifier {
+- (id)exp_productionBundleIdentifier {
     return YT_BUNDLE_ID;
 }
 %end
@@ -201,8 +201,7 @@ static NSString *accessGroupID() {
     [self setValue:YT_BUNDLE_ID forKey:@"_applicationIdentifier"];
     return self;
 }
-
-// - (void)setShortAppName:(id)appName {}
+- (void)setShortAppName:(id)appName { %orig(YT_NAME); }
 %end
 
 %hook NSBundle
@@ -263,7 +262,7 @@ static NSString *accessGroupID() {
 %end
 
 %hook GAZAppInfo
-+ (id)currentBundleIdentifier {
+- (id)currentBundleIdentifier {
     return YT_BUNDLE_ID;
 }
 %end

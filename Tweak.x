@@ -42,6 +42,10 @@
 - (id)backgroundUpsell { return nil; }
 - (id)ytm_audioOnlyUpsell { return nil; }
 - (id)offlineUpsell { return nil; }
+- (BOOL)ytm_isAudioOnlyPlayable { return YES; }
+- (BOOL)isAudioOnlyAvailabilityBlocked { return NO; }
+- (void)setIsAudioOnlyAvailabilityBlocked:(BOOL)blocked { %orig(NO); }
+- (void)setYtm_isAudioOnlyPlayable:(BOOL)playable { %orig(YES); }
 %end
 
 // Try to remove YT premium promotions 
@@ -140,9 +144,9 @@
 - (void)presentMementoPromotionIfTriggerConditionsAreSatisfied {}
 %end
 
-// %hook YTAdBaseVideoPlayerOverlayViewController
-// - (void)playbackRouteButtonWillShowPromotion {}
-// %end
+%hook YTAdBaseVideoPlayerOverlayViewController
+- (void)playbackRouteButtonWillShowPromotion {}
+%end
 
 // Remove Upgrade button
 %hook YTPivotBarView
@@ -156,9 +160,9 @@
 }
 %end
 
-// %hook YTHintController
-// - (void)sendPromoEventWithAccept:(BOOL)arg1 sendClick:(BOOL)arg2 {}
-// %end
+%hook YTHintController
+- (void)sendPromoEventWithAccept:(BOOL)arg1 sendClick:(BOOL)arg2 {}
+%end
 
 %hook YTIInStreamPlayerCtaAdsSupportedRenderers
 - (BOOL)hasAppPromoAdCtaRenderer { return NO; }
@@ -268,6 +272,7 @@
 - (id)sidePanelPromo { return nil; }
 - (id)unlimitedSettingsButton { return nil; }
 - (BOOL)isMobileAudioTier { return YES; }
+- (BOOL)isAudioOnlyButtonVisible { return YES; }
 %end
 
 %hook YTIShowFullscreenInterstitialCommand
@@ -300,7 +305,7 @@
 - (id)init {
     self = %orig;
     if (self) {
-        [self setValue:[NSNumber numberWithBool:YES] forKey:@"_isMobileAudioTierMode"];
+        [self setValue:[NSNumber numberWithBOOL:YES] forKey:@"_isMobileAudioTierMode"];
     }
     return self;
 }
@@ -339,10 +344,7 @@
 - (BOOL)isMobileAudioTier { return YES; }
 - (id)sidePanelPromo { return nil; }
 - (BOOL)canPlayBackgroundableContent { return YES; }
-%end
-
-%hook YTMQueueConfigImpl
-- (BOOL)isMobileAudioTierScreenedCastEnabled { return YES; }
+- (BOOL)isAudioOnlyButtonVisible { return YES; }
 %end
 
 // Unlimited listening - YouAreThere (https://github.com/PoomSmart/YouAreThere)
@@ -354,4 +356,77 @@
 %hook YTYouThereControllerImpl
 - (BOOL)shouldShowYouTherePrompt { return NO; }
 - (void)showYouTherePrompt {}
+%end
+
+// Unlock Audio/Video switch
+%hook YTMPlayerHeaderViewController
+- (BOOL)shouldDisplayHintForAudioVideoSwitch { return NO; }
+%end
+
+%hook YTMAudioVideoModeController
+- (BOOL)isAudioOnlyBlocked { return NO; }
+- (void)setIsAudioOnlyBlocked:(BOOL)blocked { %orig(NO); }
+- (void)setSwitchAvailability:(NSInteger)arg1 { %orig(1); }
+%end
+
+%hook YTMQueueConfig
+- (BOOL)isAudioVideoModeSupported { return YES; }
+- (void)setIsAudioVideoModeSupported:(BOOL)supported { %orig(YES); }
+%end
+
+%hook YTMAudioVideoModeControllerInternalImpl
+- (void)setSwitchAvailability:(long long)arg1 { %orig(1); }
+- (long long)switchAvailability { return 1; }
+- (BOOL)isAudioOnlyBlocked { return NO; }
+%end
+
+%hook YTDefaultQueueConfig
+- (BOOL)isAudioVideoModeSupportedForNonPodcasts { return YES; }
+- (BOOL)isAudioVideoModeSupported { return YES; }
+- (void)setIsAudioVideoModeSupported:(BOOL)supported { %orig(YES); }
+%end
+
+%hook YTMQueueConfigImpl
+- (BOOL)isAudioVideoModeSupportedForNonPodcasts { return YES; }
+- (BOOL)isMobileAudioTierScreenedCastEnabled { return YES; }
+%end
+
+%hook YTMSettings
+- (BOOL)allowAudioOnlyManualQualitySelection { return YES; }
+%end
+
+%hook YTMSettingsImpl
+- (BOOL)allowAudioOnlyManualQualitySelection { return YES; }
+%end
+
+%hook YTVideoQualitySwitchOriginalController
+- (BOOL)allowAudioOnlyManualQualitySelection { return YES; }
+- (void)setAllowAudioOnlyManualQualitySelection:(BOOL)arg { %orig(YES); }
+%end
+
+%hook YTVideoQualitySwitchRedesignedController
+- (BOOL)allowAudioOnlyManualQualitySelection { return YES; }
+- (void)setAllowAudioOnlyManualQualitySelection:(BOOL)arg { %orig(YES); }
+%end
+
+%hook YTIAudioOnlyPlayabilityRenderer
+- (BOOL)audioOnlyPlayability { return YES; }
+- (int)audioOnlyAvailability { return 1; }
+- (void)setAudioOnlyPlayability:(BOOL)playability { %orig(YES); }
+- (id)infoRenderer { return nil; }
+- (BOOL)hasInfoRenderer { return NO; }
+%end
+
+%hook YTIAudioOnlyPlayabilityRenderer_AudioOnlyPlayabilityInfoSupportedRenderers
+- (id)upsellDialogRenderer { return nil; }
+- (void)setUpsellDialogRenderer:(id)renderer {}
+%end
+
+%hook YTQueueItem
+- (BOOL)supportsAudioVideoSwitching { return YES; }
+- (void)setSupportsAudioVideoSwitching:(BOOL)arg1 { %orig(YES); }
+%end
+
+%hook YTQueueController
+- (BOOL)isAudioVideoModeSupportedForVideo:(id)video { return YES; }
 %end
