@@ -150,6 +150,7 @@
 
 // Remove Upgrade button
 %hook YTPivotBarView
+// Method 1 - YTMusicUltimate filter when rendering the button
 - (void)setRenderer:(YTIPivotBarRenderer *)renderer {
     NSMutableArray <YTIPivotBarSupportedRenderers *> *items = [renderer itemsArray];
     NSUInteger index = [items indexOfObjectPassingTest:^BOOL(YTIPivotBarSupportedRenderers *renderers, NSUInteger idx, BOOL *stop) {
@@ -158,6 +159,12 @@
     if (index != NSNotFound) [items removeObjectAtIndex:index];
     %orig;
 }
+// Method 2 - PoomSmart's hidden button (itemView4)
+// - (YTPivotBarItemView *)itemView4 {
+//    YTPivotBarItemView *view = %orig;
+//    view.navigationButton.hidden = YES;
+//    return nil;
+// }
 %end
 
 %hook YTHintController
