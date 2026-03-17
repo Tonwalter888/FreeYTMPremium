@@ -38,7 +38,7 @@
 - (id)paidContentOverlayElementRendererOptions { return nil; }
 - (BOOL)isCuepointAdsEnabled { return NO; }
 - (id)adIntroRenderer { return nil; }
-- (BOOL)isDAIEnabledPlayback { return NO; }
+- (BOOL)isDAIEnabledPlayback { return YES; }
 - (id)backgroundUpsell { return nil; }
 - (id)ytm_audioOnlyUpsell { return nil; }
 - (id)offlineUpsell { return nil; }
