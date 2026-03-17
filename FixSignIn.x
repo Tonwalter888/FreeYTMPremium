@@ -328,7 +328,7 @@ BOOL isFirstTime = YES;
                 }
                 YTAlertView *alertView = [%c(YTAlertView) infoDialog];
                 alertView.title = @"Workaround Activated";
-                alertView.subtitle = @"Please re-sign in again";
+                alertView.subtitle = @"Please sign in again.";
                 [alertView show];
             }];
         };
@@ -340,9 +340,7 @@ BOOL isFirstTime = YES;
 %hook YTMFirstTimeSignInViewController
 - (void)viewDidDisappear:(BOOL)arg1 {
     %orig;
-    YTAlertView *alertView = [YTAlertViewClass confirmationDialogWithAction:^{
-            exit(0);
-        } actionTitle:yesText];
+    YTAlertView *alertView = [%c(YTAlertView) infoDialog];
         alertView.title = @"Warning";
         alertView.subtitle = @"An app restart is requried after sign in to a Google account for the first time.";
         [alertView show];
