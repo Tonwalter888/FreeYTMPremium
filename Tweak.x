@@ -1,5 +1,22 @@
 // Original codes are from YTMusicUltimate + My research from YTM 9.10.3
 // Remove ads + Premium promotions and Allows background playback
+
+#import <Foundation/Foundation.h>
+
+@interface YTIPivotBarItemRenderer : NSObject
+@property(copy, nonatomic) NSString *pivotIdentifier;
+- (NSString *)pivotIdentifier;
+@end
+
+@interface YTIPivotBarSupportedRenderers : NSObject
+@property(retain, nonatomic) YTIPivotBarItemRenderer *pivotBarItemRenderer;
+- (YTIPivotBarItemRenderer *)pivotBarItemRenderer;
+@end
+
+@interface YTIPivotBarRenderer : NSObject
+- (NSMutableArray <YTIPivotBarSupportedRenderers *> *)itemsArray;
+@end
+
 %hook YTAdsInnerTubeContextDecorator
 - (void)decorateContext:(id)arg1 {}
 %end
@@ -34,6 +51,11 @@
 %hook YTColdConfig
 - (BOOL)iosEnableHighQualityAudioAppSettingsPremiumUpsell { return NO; }
 - (BOOL)musicPlaybackClientConfigEnableMusicPremiumUpsellForAvButton { return NO; }
+- (BOOL)cxClientDisableMementoPromotions { return YES; }
+- (BOOL)iosEnableNewPromoForcingSettingsPage { return NO; }
+- (BOOL)iosEnablePromoSkoverlay { return NO; }
+- (BOOL)mainAppCoreClientIosHidePromoSheetOnKeyboardShown { return YES; }
+- (BOOL)queueClientGlobalConfigIosEnableElementRendererPromoInQueue { return NO; }
 %end
 
 %hook YTCreateCommentAccessoryView
@@ -99,4 +121,147 @@
 %hook YTMAppResponderImpl
 - (void)setUpsellDialogController:(id)arg {}
 - (id)upsellDialogController { return nil; }
+- (void)presentFullscreenPromoForEvent:(id)arg {}
+- (void)presentInterstitialGridPromoForEvent:(id)arg {}
+- (void)presentInterstitialPromoForEvent:(id)arg {}
+- (void)setOfflineButtonPromoController:(id)arg {}
+- (id)offlineButtonPromoController { return nil; }
+- (void)executeCommandWrapperPromoRenderer:(id)arg1 firstResponder:(id)arg2 {}
+- (BOOL)shouldMealbarPromoController:(id)arg1 displayConnectionStatusMealbar:(id)arg2 hasContentDownloaded:(BOOL)arg3 { return NO; }
+%end
+
+%hook MDXFeatureFlags
+- (BOOL)areMementoPromotionsEnabled { return NO; }
+%end
+
+%hook MDXPromotionManager
+- (void)presentMementoPromotion:(long long)arg1 {}
+- (void)presentMementoPromotionIfTriggerConditionsAreSatisfied {}
+%end
+
+// %hook YTAdBaseVideoPlayerOverlayViewController
+// - (void)playbackRouteButtonWillShowPromotion {}
+// %end
+
+// Remove Upgrade button
+%hook YTPivotBarView
+- (void)setRenderer:(YTIPivotBarRenderer *)renderer {
+    NSMutableArray <YTIPivotBarSupportedRenderers *> *items = [renderer itemsArray];
+    NSUInteger index = [items indexOfObjectPassingTest:^BOOL(YTIPivotBarSupportedRenderers *renderers, NSUInteger idx, BOOL *stop) {
+        return [[[renderers pivotBarItemRenderer] pivotIdentifier] isEqualToString:@"SPunlimited"];
+    }];
+    if (index != NSNotFound) [items removeObjectAtIndex:index];
+    %orig;
+}
+%end
+
+// %hook YTHintController
+// - (void)sendPromoEventWithAccept:(BOOL)arg1 sendClick:(BOOL)arg2 {}
+// %end
+
+%hook YTIInStreamPlayerCtaAdsSupportedRenderers
+- (BOOL)hasAppPromoAdCtaRenderer { return NO; }
+%end
+
+%hook YTIRenderer
+- (BOOL)hasAppPromoAdCtaRenderer { return NO; }
+- (id)appPromoAdCtaRenderer { return nil; }
+%end
+
+%hook YTUserDefaults
+- (BOOL)isPromoForced { return NO; }
+%end
+
+%hook YTShareMainView
+- (BOOL)shouldShowPromo { return NO; }
+- (void)setPromoView:(id)arg1 {}
+%end
+
+%hook YTShareMainViewController
+- (void)addPromoViewController {}
+- (void)sharePanelPromoViewController:(id)arg1 dismissWithDismissalExpiryMs:(long long)arg2 onDismissTitleLink:(id)arg3 {}
+%end
+
+%hook YTSharePanelPromoViewController
+- (id)promoView { return nil; }
+%end
+
+%hook YTSurveyPromosheet
+- (id)expandablePromosheetDelegate { return nil; }
+- (void)setExpandablePromosheetDelegate:(id)arg1 {}
+%end
+
+%hook YTQueueController
+- (void)promoteAutoplayItemsAtIndexPaths:(id)arg1 userTriggered:(BOOL)arg2 {}
+%end
+
+%hook YTPromoThrottleControllerImpl
+- (BOOL)canShowThrottledPromo { return NO; }
+%end
+
+// Global hook (For many class that have the same functions)
+%hook NSObject
+- (void)setPromotedRenderer:(id)arg1 {}
+- (void)setPromoRenderer:(id)arg1 {}
+%end
+
+%hook YTPromosheetController
+- (void)addPromosheetControllerObserver:(id)arg {}
+- (void)presentPromosheetWithEvent:(id)arg {}
+- (BOOL)canPresentPromosheetWithGlobalThrottling:(BOOL)arg1 customizedThrottling:(id)arg2 shouldReplacePromosheet:(BOOL)arg3 { return NO; }
+%end
+
+%hook YTPromosheetContainerView
+- (void)setPromosheet:(id)arg {}
+- (void)setPromosheet:(id)arg1 animated:(BOOL)arg2 completion:(id)arg3 {}
+- (void)setPromosheetDisplayed:(BOOL)arg {}
+%end
+
+%hook YTOfflineButtonPromoController
+- (void)showOfflinePromoWithRenderer:(id)arg1 endpoint:(id)arg2 parentResponder:(id)arg3 {}
+%end
+
+%hook YTMXSDKContentController
+- (void)parseUpsellPromotionInfos:(id)arg {}
+%end
+
+%hook YTMAppMealbarPromoController
+- (id)mealbarPromoController { return nil; }
+- (void)setMealbarPromoController:(id)arg {}
+- (void)setMealbarPromoRendererButtonColors:(id)arg {}
+%end
+
+%hook YTMIntegrationsSettingsViewController
+- (void)showPromotionScreen {}
+%end
+
+%hook YTMNavigationImpl
+- (void)presentPromosheetWithEvent:(id)arg {}
+- (id)mealbarPromoController { return nil; }
+%end
+
+%hook YTMMusicAppMetadataImpl
+- (id)sidePanelPromo { return nil; }
+%end
+
+%hook YTMInterstitialPromoViewControllerImpl
+- (void)showInterstitialPromo:(id)arg1 interstitialParentResponder:(id)arg2 {}
+%end
+
+%hook YTMConnectivityMealbarControllerImpl
+- (void)showMealbarPromoRenderer:(id)arg1 hasContentDownloaded:(BOOL)arg2 {}
+%end
+
+%hook YTMContentViewController
+- (void)presentPromosheetWithEvent:(id)arg {}
+%end
+
+%hook YTMealbarPromoController
+- (void)showMealbarPromoWithEvent:(id)arg {}
+%end
+
+%hook YTInterstitialPromoViewController
+- (void)showInterstitialPromo:(id)arg1 interstitialParentResponder:(id)arg2 {}
+- (id)interstitialPromoView { return nil; }
+- (void)showInterstitialPromo:(id)arg1 enableClientImpressionThrottling:(BOOL)arg2 interstitialParentResponder:(id)arg3 {}
 %end
