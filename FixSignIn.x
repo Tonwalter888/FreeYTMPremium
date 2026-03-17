@@ -336,3 +336,15 @@ BOOL isFirstTime = YES;
     }
 }
 %end
+
+%hook YTMFirstTimeSignInViewController
+- (void)viewDidDisappear:(BOOL)arg1 {
+    %orig;
+    YTAlertView *alertView = [YTAlertViewClass confirmationDialogWithAction:^{
+            exit(0);
+        } actionTitle:yesText];
+        alertView.title = @"Warning";
+        alertView.subtitle = @"An app restart is requried after sign in to a Google account for the first time.";
+        [alertView show];
+}
+%end
