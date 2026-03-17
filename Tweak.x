@@ -17,6 +17,9 @@
 - (NSMutableArray <YTIPivotBarSupportedRenderers *> *)itemsArray;
 @end
 
+@interface YTMWatchViewController : NSObject
+@end
+
 %hook YTAdsInnerTubeContextDecorator
 - (void)decorateContext:(id)arg1 {}
 %end
